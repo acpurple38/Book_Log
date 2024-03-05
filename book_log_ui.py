@@ -16,6 +16,8 @@ class BookTableModel(QCore.QAbstractTableModel):
         self.table_data = table_data
 
         self.headers = ["Title", "Author","Date Finished"]
+        
+        self.sort_changed_signal = QCore.pyqtSignal(int, int)
     
     def rowCount(self, parent = None, *args, **kwargs):
         return len(self.table_data)
@@ -32,9 +34,13 @@ class BookTableModel(QCore.QAbstractTableModel):
             row = index.row()
             column = index.column()
             value = self.table_data[row][column]
-            if column == 2:
-                return value
             return value
+        
+    def update_data(self, new_data):
+        self.layoutAboutToBeChanged.emit()
+        self.table_data = new_data
+        self.layoutChanged.emit()
+    
 
 class BookTableView(QWidge.QTableView):
     def __init__(self):
@@ -54,13 +60,14 @@ class BookWidge(QWidge.QWidget):
 
         self.library = Book_Log()
 
-        self.title_input = QWidge.QLineEdit()
-        self.author_input = QWidge.QLineEdit()
-        self.date_input = QWidge.QLineEdit()
+        self.title_input = QWidge.QLineEdit("Title")
+        self.author_input = QWidge.QLineEdit("Author")
+        self.date_input = QWidge.QLineEdit("Date")
         self.add_button = QWidge.QPushButton('add')
         self.search_button = QWidge.QPushButton('search')
         self.display = BookTableView()
-        self.display.setModel(BookTableModel(self.library.show_log()))
+        self.display_model = BookTableModel(self.library.show_log())
+        self.display.setModel(self.display_model)
 
         self.add_button.clicked.connect(self.add_entry)
         self.search_button.clicked.connect(self.search_entries)
@@ -76,8 +83,6 @@ class BookWidge(QWidge.QWidget):
         grid.addWidget(self.display, 4, 1, 4, 4)
         self.setLayout(grid)
 
-        
-
     def add_entry(self):
         title = self.title_input.text()
         # if title == "":
@@ -85,12 +90,13 @@ class BookWidge(QWidge.QWidget):
         author = self.author_input.text()
         date = self.date_input.text()
         self.library.add_entry(title, author, date)
+        self.display_model.update_data(self.library.show_log())
 
     def search_entries(self):
         title = self.title_input.text()
         author = self.author_input.text()
         date = self.date_input.text()
-        search_by = title
+        
 
 
 
