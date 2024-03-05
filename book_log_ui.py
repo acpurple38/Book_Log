@@ -49,6 +49,9 @@ class BookWidge(QWidge.QWidget):
         self.display = BookTableView()
         self.display.setModel(BookTableModel())
 
+        self.add_button.clicked.connect(self.add_entry)
+        self.search_button.clicked.connect(self.search_entries)
+
         grid = QWidge.QGridLayout()
         grid.setSpacing(10)
 
@@ -59,6 +62,21 @@ class BookWidge(QWidge.QWidget):
         grid.addWidget(self.search_button, 2, 2)
         grid.addWidget(self.display, 4, 1, 4, 4)
         self.setLayout(grid)
+
+    def add_entry(self):
+        title = self.title_input.text()
+        # if title == "":
+        #     title = "Empty"
+        author = self.author_input.text()
+        date = self.date_input.text()
+        print(f'{title} by {author} in {date}')
+
+    def search_entries(self):
+        title = self.title_input.text()
+        author = self.author_input.text()
+        date = self.date_input.text()
+        search_by = title
+
 
 
 class BookWindow(QWidge.QMainWindow):
