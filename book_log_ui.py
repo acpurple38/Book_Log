@@ -4,12 +4,14 @@ import sys
 import PyQt6.QtCore as QCore
 import PyQt6.QtWidgets as QWidge
 import PyQt6.QtGui as QGUI
+from book_db import Book_Log
 
 class BookTableModel(QCore.QAbstractTableModel):
     def __init__(self, table_data = None, parent = None):
         super().__init__()
+
         if table_data is None:
-            table_data = [[]]
+            table_data = [["", "", ""]]
         
         self.table_data = table_data
 
@@ -24,6 +26,15 @@ class BookTableModel(QCore.QAbstractTableModel):
     def headerData(self, section, orientation, role = None):
         if role == QCore.Qt.ItemDataRole.DisplayRole and orientation == QCore.Qt.Orientation.Horizontal:
             return self.headers[section]
+        
+    def data(self, index, role = None):
+        if role == QCore.Qt.ItemDataRole.DisplayRole:
+            row = index.row()
+            column = index.column()
+            value = self.table_data[row][column]
+            if column == 2:
+                return value
+            return value
 
 class BookTableView(QWidge.QTableView):
     def __init__(self):
@@ -41,13 +52,15 @@ class BookWidge(QWidge.QWidget):
     def __init__(self):
         super().__init__()
 
+        self.library = Book_Log()
+
         self.title_input = QWidge.QLineEdit()
         self.author_input = QWidge.QLineEdit()
         self.date_input = QWidge.QLineEdit()
         self.add_button = QWidge.QPushButton('add')
         self.search_button = QWidge.QPushButton('search')
         self.display = BookTableView()
-        self.display.setModel(BookTableModel())
+        self.display.setModel(BookTableModel(self.library.show_log()))
 
         self.add_button.clicked.connect(self.add_entry)
         self.search_button.clicked.connect(self.search_entries)
@@ -63,13 +76,15 @@ class BookWidge(QWidge.QWidget):
         grid.addWidget(self.display, 4, 1, 4, 4)
         self.setLayout(grid)
 
+        
+
     def add_entry(self):
         title = self.title_input.text()
         # if title == "":
         #     title = "Empty"
         author = self.author_input.text()
         date = self.date_input.text()
-        print(f'{title} by {author} in {date}')
+        self.library.add_entry(title, author, date)
 
     def search_entries(self):
         title = self.title_input.text()
@@ -92,7 +107,6 @@ class BookWindow(QWidge.QMainWindow):
         self.setCentralWidget(self.center)
 
         self.show()
-
 
 def main():
     app = QWidge.QApplication(sys.argv)
