@@ -28,7 +28,6 @@ class BookTableModel(QCore.QAbstractTableModel):
 class BookTableView(QWidge.QTableView):
     def __init__(self):
         super().__init__()
-        # title = QWidge.QHeaderView
         self.setVisible(True)
 
     def resizeEvent(self, event):
@@ -42,17 +41,23 @@ class BookWidge(QWidge.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.search_input = QWidge.QLineEdit()
+        self.title_input = QWidge.QLineEdit()
+        self.author_input = QWidge.QLineEdit()
+        self.date_input = QWidge.QLineEdit()
         self.add_button = QWidge.QPushButton('add')
+        self.search_button = QWidge.QPushButton('search')
         self.display = BookTableView()
         self.display.setModel(BookTableModel())
 
         grid = QWidge.QGridLayout()
         grid.setSpacing(10)
 
-        grid.addWidget(self.search_input, 1, 1)
+        grid.addWidget(self.title_input, 1, 1)
+        grid.addWidget(self.author_input, 2, 1)
+        grid.addWidget(self.date_input, 3, 1)
         grid.addWidget(self.add_button, 1, 2)
-        grid.addWidget(self.display, 2, 1, 4, 4)
+        grid.addWidget(self.search_button, 2, 2)
+        grid.addWidget(self.display, 4, 1, 4, 4)
         self.setLayout(grid)
 
 
