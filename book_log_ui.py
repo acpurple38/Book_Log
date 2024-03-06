@@ -65,12 +65,14 @@ class BookWidge(QWidge.QWidget):
         self.date_input = QWidge.QLineEdit("Date")
         self.add_button = QWidge.QPushButton('add')
         self.search_button = QWidge.QPushButton('search')
+        self.rem_button = QWidge.QPushButton('remove')
         self.display = BookTableView()
         self.display_model = BookTableModel(self.library.show_log())
         self.display.setModel(self.display_model)
 
         self.add_button.clicked.connect(self.add_entry)
         self.search_button.clicked.connect(self.search_entries)
+        self.rem_button.clicked.connect(self.rem_entry)
 
         grid = QWidge.QGridLayout()
         grid.setSpacing(10)
@@ -80,13 +82,12 @@ class BookWidge(QWidge.QWidget):
         grid.addWidget(self.date_input, 3, 1)
         grid.addWidget(self.add_button, 1, 2)
         grid.addWidget(self.search_button, 2, 2)
+        grid.addWidget(self.rem_button, 3, 2)
         grid.addWidget(self.display, 4, 1, 4, 4)
         self.setLayout(grid)
 
     def add_entry(self):
         title = self.title_input.text()
-        # if title == "":
-        #     title = "Empty"
         author = self.author_input.text()
         date = self.date_input.text()
         self.library.add_entry(title, author, date)
@@ -97,6 +98,13 @@ class BookWidge(QWidge.QWidget):
         author = self.author_input.text()
         date = self.date_input.text()
         self.display_model.update_data(self.library.search_entries(title, author, date))
+
+    def rem_entry(self):
+        title = self.title_input.text()
+        author = self.author_input.text()
+        date = self.date_input.text()
+        self.library.rem_entry(title, author, date)
+        self.display_model.update_data(self.library.show_log())
 
 
 class BookWindow(QWidge.QMainWindow):

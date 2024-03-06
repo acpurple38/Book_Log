@@ -51,6 +51,11 @@ class Book_Log():
                 if d not in data:
                     data.append(d)
         return data
+    
+    def rem_entry(self, title, author, date):
+        self.librarian.execute("""DELETE FROM Book WHERE Title LIKE ('%' || ? || '%') AND
+                               Author LIKE ('%' || ? || '%') AND Date LIKE ('%' || ? || '%')""", (title, author, date))
+        self.library.commit()
 
     def show_log(self):
         self.librarian.execute("SELECT * FROM Book ORDER BY Date ASC")
