@@ -31,21 +31,21 @@ class Book_Log():
     def search_entries(self, title, author, date):
         data = []
         if title != "":
-            self.librarian.execute("SELECT * FROM Book WHERE Title LIKE ('%' || ? || '%') ORDER BY Date ASC", (title,))
+            self.librarian.execute("SELECT * FROM Book WHERE Title LIKE ('%' || ? || '%') ORDER BY Date DESC", (title,))
             new_data = self.librarian.fetchall()
             for d in new_data:
                 if d not in data:
                     data.append(d)
 
         if author != "":
-            self.librarian.execute("SELECT * FROM Book WHERE Author LIKE ('%' || ? || '%') ORDER BY Date ASC", (author,))
+            self.librarian.execute("SELECT * FROM Book WHERE Author LIKE ('%' || ? || '%') ORDER BY Date DESC", (author,))
             new_data = self.librarian.fetchall()
             for d in new_data:
                 if d not in data:
                     data.append(d)
         
         if date != "":
-            self.librarian.execute("SELECT * FROM Book WHERE Date LIKE ('%' || ? || '%') ORDER BY Date ASC", (date,))
+            self.librarian.execute("SELECT * FROM Book WHERE Date LIKE ('%' || ? || '%') ORDER BY Date DESC", (date,))
             new_data = self.librarian.fetchall()
             for d in new_data:
                 if d not in data:
@@ -53,12 +53,14 @@ class Book_Log():
         return data
     
     def rem_entry(self, title, author, date):
+        if title == "" and author == "" and date == "":
+            return
         self.librarian.execute("""DELETE FROM Book WHERE Title LIKE ('%' || ? || '%') AND
                                Author LIKE ('%' || ? || '%') AND Date LIKE ('%' || ? || '%')""", (title, author, date))
         self.library.commit()
 
     def show_log(self):
-        self.librarian.execute("SELECT * FROM Book ORDER BY Date ASC")
+        self.librarian.execute("SELECT * FROM Book ORDER BY Date DESC")
         data = self.librarian.fetchall()
         return data
 
