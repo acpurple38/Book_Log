@@ -108,6 +108,9 @@ class BookWidge(QWidge.QWidget):
         date = self.date_input.text()
         self.library.rem_entry(title, author, date)
         self.display_model.update_data(self.library.show_log())
+        self.title_input.clear()
+        self.author_input.clear()
+        self.date_input.clear()
 
 class BookWindow(QWidge.QMainWindow):
     def __init__(self):
@@ -120,7 +123,7 @@ class BookWindow(QWidge.QMainWindow):
         self.resize(500, 400)
         self.center = BookWidge()
         self.setCentralWidget(self.center)
-        
+
         self.show()
 
 def main():
