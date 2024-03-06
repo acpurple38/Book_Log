@@ -96,8 +96,7 @@ class BookWidge(QWidge.QWidget):
         title = self.title_input.text()
         author = self.author_input.text()
         date = self.date_input.text()
-        
-
+        self.display_model.update_data(self.library.search_entries(title, author, date))
 
 
 class BookWindow(QWidge.QMainWindow):
